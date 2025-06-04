@@ -83,4 +83,77 @@ def next_question():
     else:
         window.after(1000, show_result)
 
+# Carrega nova pergunta
+def load_question():
+    selected_option.set("")
+    feedback_label.config(text="")
+    question = questions[current_question]
+    question_label.config(text=f"{current_question + 1}. {question['question']}")
+    for i in range(4):
+        options[i].config(text=question["options"][i], value=question["options"][i])
 
+# Mostra resultado final
+def show_result():
+    for widget in main_frame.winfo_children():
+        widget.destroy()
+
+    result = f"Você acertou {score} de {len(questions)} perguntas!"
+    final_label = ttk.Label(main_frame, text=result, font=("Poppins", 16))
+    final_label.pack(pady=20)
+
+    btn_sair = ttk.Button(main_frame, text="Sair", command=window.destroy)
+    btn_sair.pack()
+
+# Criar janela
+window = tk.Tk()
+window.title("Quiz de Super-Heróis")
+window.geometry("500x400")
+window.resizable(False, False)
+
+# Estilo moderno
+style = ttk.Style(window)
+style.theme_use("clam")
+style.configure("TLabel", font=("Poppins", 12))
+style.configure("TRadiobutton", font=("Poppins", 11))
+style.configure("TButton", font=("Poppins", 12), padding=6)
+
+# Frame principal
+main_frame = ttk.Frame(window, padding=20)
+main_frame.pack(expand=True, fill="both")
+
+# Pergunta
+question_label = ttk.Label(main_frame, text="", wraplength=450, anchor="center", font=("Poppins", 14, "bold"))
+question_label.pack(pady=15)
+
+# Opções
+selected_option = tk.StringVar()
+options = []
+for i in range(4):
+    rb = ttk.Radiobutton(main_frame, text="", variable=selected_option, value="")
+    rb.pack(anchor="w", pady=2)
+    options.append(rb)
+
+# Feedback
+feedback_label = ttk.Label(main_frame, text="", font=("Poppins", 11))
+feedback_label.pack(pady=10)
+
+# Botão próxima
+btn_next = ttk.Button(main_frame, text="Próxima", command=next_question)
+btn_next.pack(pady=10)
+
+# Estilo da barra de progresso verde
+style.configure("green.Horizontal.TProgressbar", troughcolor="white", background="green")
+
+# Barra de progresso
+progress = ttk.Progressbar(
+    main_frame,
+    length=400,
+    mode="determinate",
+    maximum=len(questions),
+    style="green.Horizontal.TProgressbar"
+)
+progress.pack(pady=10)
+
+# Iniciar
+load_question()
+window.mainloop()
